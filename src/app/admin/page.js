@@ -1,145 +1,110 @@
 "use client";
 import React, { useState } from 'react';
+import useSWR from 'swr';
+import Papa from 'papaparse';
 import { motion } from 'framer-motion';
-import Link from 'next/link';
 import { 
-  Users, 
-  UserCheck, 
-  UserX, 
-  Plus, 
-  Search, 
-  FileEdit, 
-  Trash2, 
-  LogOut,
-  LayoutDashboard,
-  Settings,
-  Upload
+  Users, UserCheck, UserX, LogOut, Search, RefreshCw, GraduationCap, List 
 } from 'lucide-react';
+import { deleteCookie } from 'cookies-next';
+import { useRouter } from 'next/navigation';
+
+const GOOGLE_SHEET_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTUVq4l9uDPXQLj8S3BBa0lrRWvNWATwEzjtdhzfJvDMMVfGR5PIODosccCS9KOgYPT9OIm5jPoLSMD/pub?output=csv";
+
+// Fetcher Function
+const fetcher = (url) => new Promise((resolve, reject) => {
+  Papa.parse(url, {
+    download: true,
+    header: false,
+    skipEmptyLines: true,
+    complete: (results) => resolve(results.data.slice(1)),
+    error: (err) => reject(err)
+  });
+});
 
 export default function AdminDashboard() {
-  // Data dummy untuk tampilan
-  const [students, setStudents] = useState([
-    { id: 1, name: "Budi Santoso", nisn: "0012345678", status: "Lulus" },
-    { id: 2, name: "Siti Aminah", nisn: "0012345679", status: "Lulus" },
-    { id: 3, name: "Rian Hidayat", nisn: "0012345680", status: "Ditunda" },
-  ]);
+  const { data: students, mutate, isValidating } = useSWR(GOOGLE_SHEET_URL, fetcher);
+  const [searchTerm, setSearchTerm] = useState("");
+  const router = useRouter();
+
+  const handleLogout = () => {
+    deleteCookie('admin_session');
+    router.push('/admin/login');
+  };
+
+  // Statistik (Berdasarkan Kolom L / Index 11)
+  const totalSiswa = students?.length || 0;
+  const totalLulus = students?.filter(row => row[11]?.toString().toUpperCase().trim() === "LULUS").length || 0;
+  const totalTidakLulus = totalSiswa - totalLulus;
+
+  // Filter Pencarian
+  const filteredData = students?.filter(row => 
+    row[1]?.toString().toLowerCase().includes(searchTerm.toLowerCase()) ||
+    row[4]?.toString().includes(searchTerm)
+  ) || [];
 
   return (
-    <div className="min-h-screen bg-gray-50 flex">
-      
+    <div className="min-h-screen bg-slate-50 flex flex-col md:flex-row">
       {/* SIDEBAR */}
-      <aside className="w-64 bg-blue-800 text-white hidden md:flex flex-col">
-        <div className="p-6 text-2xl font-bold border-b border-blue-700">
-          Admin SMP
+      <aside className="w-full md:w-64 bg-slate-900 text-white p-6 flex flex-col">
+        <div className="flex items-center gap-3 mb-10">
+          <GraduationCap className="text-blue-500" size={28} />
+          <h2 className="font-black text-lg italic tracking-tight uppercase">Admin SMPN 18</h2>
         </div>
-        <nav className="flex-1 p-4 space-y-2">
-          <button className="flex items-center space-x-3 w-full p-3 bg-blue-700 rounded-lg">
-            <LayoutDashboard size={20} />
-            <span>Dashboard</span>
-          </button>
-
-          <Link href="/admin/siswa">
-          <button className="flex items-center space-x-3 w-full p-3 hover:bg-blue-700 rounded-lg transition">
-            <Users size={20} />
-            <span>Data Siswa</span>
-          </button>
-          </Link>
-
-            <Link href="/admin/import">
-          <button className="flex items-center space-x-3 w-full p-3 hover:bg-blue-700 rounded-lg transition">
-            <Upload size={20} />
-            <span>Import Data</span>
-          </button>
-          </Link>
-
-          <Link href="/admin/seting">
-          <button className="flex items-center space-x-3 w-full p-3 hover:bg-blue-700 rounded-lg transition">
-            <Settings size={20} />
-            <span>Pengaturan</span>
-          </button>
-          </Link>
+        <nav className="flex-1 space-y-2 font-bold">
+          <div className="bg-blue-600 p-4 rounded-xl flex items-center gap-3"><List size={18} /> Data Kelulusan</div>
         </nav>
-        <div className="p-4 border-t border-blue-700">
-          <button className="flex items-center space-x-3 w-full p-3 hover:bg-red-600 rounded-lg transition">
-            <LogOut size={20} />
-            <span>Keluar</span>
-          </button>
-        </div>
+        <button onClick={handleLogout} className="mt-10 p-4 text-red-400 hover:bg-red-500/10 rounded-xl transition font-bold flex items-center gap-3">
+          <LogOut size={18} /> KELUAR
+        </button>
       </aside>
 
-      {/* MAIN CONTENT */}
+      {/* MAIN */}
       <main className="flex-1 p-6 md:p-10">
-        
-        {/* Header */}
-        <div className="flex flex-col md:flex-row md:items-center justify-between mb-8 gap-4">
+        <div className="flex justify-between items-center mb-10">
           <div>
-            <h1 className="text-3xl font-bold text-gray-800">Ringkasan Data</h1>
-            <p className="text-gray-500">Kelola pengumuman kelulusan siswa di sini.</p>
+            <h1 className="text-3xl font-black text-slate-800">Dashboard Admin</h1>
+            <p className="text-slate-500 font-medium italic">Sinkronisasi Google Sheets Aktif</p>
           </div>
-          <button className="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2.5 rounded-lg flex items-center gap-2 shadow-md transition w-fit">
-            <Plus size={20} /> Tambah Siswa
+          <button onClick={() => mutate()} disabled={isValidating} className="bg-white border-2 border-slate-200 px-6 py-3 rounded-2xl flex items-center gap-2 font-bold shadow-sm active:scale-95 transition-all">
+            <RefreshCw size={18} className={isValidating ? "animate-spin text-blue-600" : ""} />
+            {isValidating ? "Memuat..." : "Refresh Data"}
           </button>
         </div>
 
-        {/* Stats Cards */}
+        {/* STATS */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
-          <StatsCard icon={<Users className="text-blue-600" />} title="Total Siswa" count="120" color="bg-blue-100" />
-          <StatsCard icon={<UserCheck className="text-green-600" />} title="Lulus" count="115" color="bg-green-100" />
-          <StatsCard icon={<UserX className="text-red-600" />} title="Tidak Lulus" count="5" color="bg-red-100" />
+          <StatBox label="Total Peserta" value={totalSiswa} color="bg-blue-50" textColor="text-blue-600" />
+          <StatBox label="Lulus" value={totalLulus} color="bg-emerald-50" textColor="text-emerald-600" />
+          <StatBox label="Tidak Lulus" value={totalTidakLulus} color="bg-rose-50" textColor="text-rose-600" />
         </div>
 
-        {/* Table Section */}
-        <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-          <div className="p-5 border-b border-gray-100 flex flex-col md:flex-row gap-4 justify-between items-center">
-            <h2 className="text-xl font-bold text-gray-800">Daftar Kelulusan</h2>
+        {/* TABLE */}
+        <div className="bg-white rounded-[40px] shadow-sm border border-slate-200 overflow-hidden">
+          <div className="p-6 border-b flex justify-between items-center gap-4">
+            <h3 className="font-black text-xs uppercase tracking-widest text-slate-400">Tabel Kelulusan</h3>
             <div className="relative w-full md:w-72">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
-              <input 
-                type="text" 
-                placeholder="Cari nama atau NISN..." 
-                className="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
+              <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-300" size={18} />
+              <input type="text" placeholder="Cari Nama/NISN..." value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} className="w-full pl-12 pr-4 py-3 bg-slate-50 border-2 border-slate-100 rounded-2xl focus:border-blue-600 outline-none font-bold text-sm" />
             </div>
           </div>
-
           <div className="overflow-x-auto">
             <table className="w-full text-left">
-              <thead className="bg-gray-50 text-gray-600 uppercase text-sm">
-                <tr>
-                  <th className="px-6 py-4 font-semibold">Nama Siswa</th>
-                  <th className="px-6 py-4 font-semibold">NISN</th>
-                  <th className="px-6 py-4 font-semibold">Status</th>
-                  <th className="px-6 py-4 font-semibold text-center">Aksi</th>
-                </tr>
+              <thead className="bg-slate-50 text-slate-400 font-black text-[10px] uppercase tracking-[0.2em]">
+                <tr><th className="px-8 py-5">Nama</th><th className="px-8 py-5">NISN</th><th className="px-8 py-5">Tgl Lahir</th><th className="px-8 py-5">Status</th></tr>
               </thead>
-              <tbody className="divide-y divide-gray-100">
-                {students.map((student) => (
-                  <motion.tr 
-                    initial={{ opacity: 0 }} 
-                    animate={{ opacity: 1 }} 
-                    key={student.id} 
-                    className="hover:bg-gray-50 transition"
-                  >
-                    <td className="px-6 py-4 font-medium text-gray-800">{student.name}</td>
-                    <td className="px-6 py-4 text-gray-600">{student.nisn}</td>
-                    <td className="px-6 py-4">
-                      <span className={`px-3 py-1 rounded-full text-xs font-bold ${
-                        student.status === 'Lulus' ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700'
-                      }`}>
-                        {student.status}
+              <tbody className="divide-y divide-slate-100 font-bold text-sm text-slate-600">
+                {filteredData.map((row, i) => (
+                  <tr key={i} className="hover:bg-slate-50 transition-colors">
+                    <td className="px-8 py-4">{row[1]}</td>
+                    <td className="px-8 py-4">{row[4]}</td>
+                    <td className="px-8 py-4">{row[6]}</td>
+                    <td className="px-8 py-4">
+                      <span className={`px-3 py-1 rounded-lg text-[10px] font-black uppercase ${row[11]?.includes("TIDAK") ? 'bg-red-100 text-red-600' : 'bg-green-100 text-green-600'}`}>
+                        {row[11] || "LULUS"}
                       </span>
                     </td>
-                    <td className="px-6 py-4">
-                      <div className="flex justify-center space-x-2">
-                        <button className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition" title="Edit">
-                          <FileEdit size={18} />
-                        </button>
-                        <button className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition" title="Hapus">
-                          <Trash2 size={18} />
-                        </button>
-                      </div>
-                    </td>
-                  </motion.tr>
+                  </tr>
                 ))}
               </tbody>
             </table>
@@ -150,20 +115,11 @@ export default function AdminDashboard() {
   );
 }
 
-// Komponen Card Statistik
-function StatsCard({ icon, title, count, color }) {
+function StatBox({ label, value, color, textColor }) {
   return (
-    <motion.div 
-      whileHover={{ y: -5 }}
-      className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 flex items-center space-x-4"
-    >
-      <div className={`p-4 rounded-lg ${color}`}>
-        {icon}
-      </div>
-      <div>
-        <p className="text-sm text-gray-500 font-medium">{title}</p>
-        <p className="text-2xl font-bold text-gray-800">{count}</p>
-      </div>
-    </motion.div>
+    <div className={`${color} p-8 rounded-[35px] border border-white shadow-sm`}>
+      <p className={`text-[10px] font-black uppercase tracking-widest mb-1 ${textColor}`}>{label}</p>
+      <p className="text-4xl font-black text-slate-800 tracking-tighter">{value}</p>
+    </div>
   );
 }

@@ -12,11 +12,18 @@ export default function CekKelulusan() {
   const [errorMsg, setErrorMsg] = useState("");
   const router = useRouter();
 
-  const GOOGLE_SHEET_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQROG_sfb9He-IVo2xD2MhYXg2wpf-5YZF5L_nDhpOFRyGLXl2csLxAgqBHCN_IeMD8msQ9kW7WxSjm/pub?output=csv";
+  // URL Google Sheets Anda (Sudah terupdate)
+  const GOOGLE_SHEET_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTUVq4l9uDPXQLj8S3BBa0lrRWvNWATwEzjtdhzfJvDMMVfGR5PIODosccCS9KOgYPT9OIm5jPoLSMD/pub?output=csv";
 
   const handleCek = () => {
+    // Validasi input
     if (!nisn || !tglLahirRaw) {
       setErrorMsg("Harap isi NISN dan Tanggal Lahir!");
+      return;
+    }
+
+    if (nisn.length < 9) {
+      setErrorMsg("NISN harus terdiri dari 10 angka (cek kembali)");
       return;
     }
     
@@ -25,12 +32,12 @@ export default function CekKelulusan() {
 
     Papa.parse(GOOGLE_SHEET_URL, {
       download: true,
-      header: false, // Kita baca mentah dulu untuk mencari posisi kolom
+      header: false, // Membaca baris secara manual agar lebih akurat
       skipEmptyLines: true,
       complete: (results) => {
         const allRows = results.data;
         
-        // 1. CARI BARIS HEADER (Baris yang berisi tulisan 'Nama' atau 'NISN')
+        // 1. Cari baris header (untuk menentukan posisi kolom secara dinamis)
         const headerIndex = allRows.findIndex(row => 
           row.some(cell => cell?.toString().toLowerCase().includes('nisn'))
         );
@@ -43,13 +50,13 @@ export default function CekKelulusan() {
 
         const headerRow = allRows[headerIndex];
         
-        // 2. TEMUKAN POSISI KOLOM SECARA OTOMATIS
-        const getIdx = (name) => headerRow.findIndex(cell => cell?.toString().toLowerCase().includes(name.toLowerCase()));
+        // 2. Temukan index kolom berdasarkan teks header
+        const getIdx = (name) => headerRow.findIndex(cell => cell?.toString().toLowerCase().trim().includes(name.toLowerCase()));
         
         const idxNama = getIdx('nama');
         const idxNISN = getIdx('nisn');
-        const idxTgl  = getIdx('tanggal');
-        const idxKet  = getIdx('keterangan');
+        const idxTgl  = getIdx('tanggal'); // Mencari kolom "Tanggal Lahir"
+        const idxKet  = getIdx('keterangan'); // Mencari kohttps://docs.googlelom "Keterangan lulus" atau "Status"
         const idxIbu  = getIdx('ibu');
         const idxAyah = getIdx('ayah');
         const idxNIK  = getIdx('nik');
@@ -58,22 +65,22 @@ export default function CekKelulusan() {
         const idxTempat = getIdx('tempat');
         const idxAgama = getIdx('agama');
 
-        // 3. LOGIKA TANGGAL (Ubah 2011-01-15 menjadi 1/15/2011)
-        const [year, month, day] = tglLahirRaw.split("-");
-        const mClean = parseInt(month, 10).toString();
-        const dClean = parseInt(day, 10).toString();
-        const tglTarget = `${mClean}/${dClean}/${year}`; 
+        // 3. Target pencarian (Format sudah sama: YYYY-MM-DD)
+        const tglTarget = tglLahirRaw; 
 
-        // 4. CARI DATA SISWA
+        // 4. Cari data siswa di baris-baris setelah header
         const foundRow = allRows.slice(headerIndex + 1).find(row => {
           const valNISN = row[idxNISN]?.toString().trim();
           const valTgl = row[idxTgl]?.toString().trim();
+          
+          // Pencarian NISN dan Tanggal Lahir
           return valNISN === nisn.trim() && valTgl === tglTarget;
         });
 
         if (foundRow) {
+          // Normalisasi data agar halaman hasil bisa menampilkan dengan benar
           const normalizedData = {
-            nama: foundRow[idxNama] || "Tidak Ada Nama",           
+            nama: foundRow[idxNama] || "Tanpa Nama",           
             nipd: foundRow[idxNIPD] || "-",           
             jk: foundRow[idxJK] || "-",             
             nisn: foundRow[idxNISN] || "-",           
@@ -90,11 +97,11 @@ export default function CekKelulusan() {
           router.push('/hasil');
         } else {
           setLoading(false);
-          setErrorMsg(`Data Tidak Ditemukan!\nInput: ${nisn} & ${tglTarget}\nPeriksa penulisan di Sheets.`);
+          setErrorMsg(`Data Tidak Ditemukan!\nNISN: ${nisn}\nTgl Lahir: ${tglTarget}\nPastikan data di Sheets sudah benar.`);
         }
       },
       error: () => {
-        setErrorMsg("Gagal mengambil data. Cek koneksi internet.");
+        setErrorMsg("Gagal mengambil data. Periksa koneksi internet Anda.");
         setLoading(false);
       }
     });
@@ -102,17 +109,26 @@ export default function CekKelulusan() {
 
   return (
     <div className="min-h-screen bg-blue-600 flex items-center justify-center p-6">
-      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="bg-white p-8 rounded-[40px] shadow-2xl w-full max-w-md">
-        <div className="bg-blue-100 w-20 h-20 rounded-3xl flex items-center justify-center mx-auto mb-6">
+      <motion.div 
+        initial={{ opacity: 0, scale: 0.9 }} 
+        animate={{ opacity: 1, scale: 1 }} 
+        className="bg-white p-8 rounded-[40px] shadow-2xl w-full max-w-md border-4 border-white/20"
+      >
+        <div className="bg-blue-100 w-20 h-20 rounded-3xl flex items-center justify-center mx-auto mb-6 rotate-3">
           <GraduationCap className="text-blue-600" size={40} />
         </div>
+        
         <h1 className="text-2xl font-black text-center text-slate-800 mb-2 uppercase italic tracking-tighter">Portal Kelulusan</h1>
         <p className="text-center text-slate-400 font-bold text-[10px] mb-8 uppercase tracking-[0.3em]">SMP NEGERI 18 BUTON TENGAH</p>
         
         <div className="space-y-5">
           <AnimatePresence>
             {errorMsg && (
-              <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="bg-red-50 text-red-600 p-4 rounded-2xl text-[11px] font-bold border border-red-100 whitespace-pre-line">
+              <motion.div 
+                initial={{ opacity: 0, height: 0 }} 
+                animate={{ opacity: 1, height: 'auto' }} 
+                className="bg-red-50 text-red-600 p-4 rounded-2xl text-[11px] font-bold border border-red-100 whitespace-pre-line leading-relaxed"
+              >
                 <AlertCircle size={16} className="inline mr-2" /> {errorMsg}
               </motion.div>
             )}
@@ -120,17 +136,41 @@ export default function CekKelulusan() {
 
           <div>
             <label className="text-[10px] font-black text-slate-400 ml-2 uppercase tracking-widest">NISN Siswa</label>
-            <input type="text" placeholder="Masukkan NISN" value={nisn} onChange={(e) => setNisn(e.target.value)} className="w-full px-5 py-4 bg-slate-50 border-2 border-slate-100 rounded-2xl focus:border-blue-500 outline-none transition-all font-bold text-slate-700 mt-1" />
+            <input 
+              type="text" 
+              maxLength={10}
+              placeholder="Contoh: 1044335450" 
+              value={nisn} 
+              onChange={(e) => setNisn(e.target.value.replace(/\D/g, ""))} // Hanya angka
+              className="w-full px-5 py-4 bg-slate-50 border-2 border-slate-100 rounded-2xl focus:border-blue-500 outline-none transition-all font-bold text-slate-700 mt-1" 
+            />
           </div>
 
           <div>
             <label className="text-[10px] font-black text-slate-400 ml-2 uppercase tracking-widest">Pilih Tanggal Lahir</label>
-            <input type="date" value={tglLahirRaw} onChange={(e) => setTglLahirRaw(e.target.value)} className="w-full px-5 py-4 bg-slate-50 border-2 border-slate-100 rounded-2xl focus:border-blue-500 outline-none transition-all font-bold text-slate-700 uppercase mt-1" style={{ colorScheme: 'light' }} />
+            <div className="relative mt-1">
+              <Calendar className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-300 pointer-events-none" size={20} />
+              <input 
+                type="date" 
+                value={tglLahirRaw} 
+                onChange={(e) => setTglLahirRaw(e.target.value)} 
+                className="w-full pl-12 pr-4 py-4 bg-slate-50 border-2 border-slate-100 rounded-2xl focus:border-blue-500 focus:bg-white outline-none transition-all font-bold text-slate-700 uppercase"
+                style={{ colorScheme: 'light' }}
+              />
+            </div>
           </div>
           
-          <button onClick={handleCek} disabled={loading} className="w-full bg-blue-600 hover:bg-blue-700 text-white font-black py-5 rounded-3xl shadow-xl transition-all flex items-center justify-center gap-3 mt-4">
+          <button 
+            onClick={handleCek} 
+            disabled={loading} 
+            className="w-full bg-blue-600 hover:bg-blue-700 text-white font-black py-5 rounded-3xl shadow-xl transition-all flex items-center justify-center gap-3 mt-4 active:scale-95 disabled:opacity-50"
+          >
             {loading ? <Loader2 className="animate-spin" /> : "LIHAT HASIL KELULUSAN"}
           </button>
+
+          <p className="text-center text-slate-300 font-bold text-[9px] mt-4 uppercase tracking-widest italic">
+            &copy; 2026 Digital Graduation System
+          </p>
         </div>
       </motion.div>
     </div>
