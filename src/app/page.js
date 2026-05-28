@@ -47,9 +47,9 @@ export default function Home() {
             </div>
             <h3 className="text-xl font-bold mb-3">Jadwal Penting</h3>
             <ul className="text-slate-600 space-y-2">
-              <li>• Pengumuman: 25 Mei 2026</li>
-              <li>• Cap Tiga Jari: 28 Mei 2026</li>
-              <li>• Pengambilan SKL: 1 Juni 2026</li>
+              <li>• Pengumuman: 02 Juni 2026</li>
+              <li>• Cap Tiga Jari: - </li>
+              <li>• Pengambilan SKL: - </li>
             </ul>
           </div>
 
