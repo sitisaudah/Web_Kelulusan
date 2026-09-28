@@ -1,125 +1,217 @@
 "use client";
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import useSWR from 'swr';
-import Papa from 'papaparse';
-import { motion } from 'framer-motion';
 import { 
-  Users, UserCheck, UserX, LogOut, Search, RefreshCw, GraduationCap, List 
+  Users, Award, BookOpen, MessageSquare, 
+  Search, RefreshCw, ChevronRight, ExternalLink, 
+  ShieldCheck, CheckCircle2, XCircle 
 } from 'lucide-react';
-import { deleteCookie } from 'cookies-next';
-import { useRouter } from 'next/navigation';
-
-const GOOGLE_SHEET_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTUVq4l9uDPXQLj8S3BBa0lrRWvNWATwEzjtdhzfJvDMMVfGR5PIODosccCS9KOgYPT9OIm5jPoLSMD/pub?output=csv";
-
-// Fetcher Function
-const fetcher = (url) => new Promise((resolve, reject) => {
-  Papa.parse(url, {
-    download: true,
-    header: false,
-    skipEmptyLines: true,
-    complete: (results) => resolve(results.data.slice(1)),
-    error: (err) => reject(err)
-  });
-});
+import Link from 'next/link';
+import Topbar from '@/components/portal/Topbar';
+import { getGraduationStats, DEFAULT_GOOGLE_SHEET_URL } from '@/backend/services/graduationService';
+import { getSiswaList } from '@/backend/actions/siswaActions';
+import { getUlanganList } from '@/backend/actions/ulanganActions';
+import { getPesanKontakList } from '@/backend/actions/kontakActions';
 
 export default function AdminDashboard() {
-  const { data: students, mutate, isValidating } = useSWR(GOOGLE_SHEET_URL, fetcher);
-  const [searchTerm, setSearchTerm] = useState("");
-  const router = useRouter();
+  const [searchTerm, setSearchTerm] = useState('');
+  const [dbSiswaCount, setDbSiswaCount] = useState(0);
+  const [cbtCount, setCbtCount] = useState(0);
+  const [pesanCount, setPesanCount] = useState(0);
 
-  const handleLogout = () => {
-    deleteCookie('admin_session');
-    router.push('/admin/login');
-  };
+  // Fetch data kelulusan dari Google Spreadsheet melalui SWR
+  const { data: sheetData, mutate, isValidating, error } = useSWR(
+    'graduation_stats_admin',
+    () => getGraduationStats(DEFAULT_GOOGLE_SHEET_URL),
+    { revalidateOnFocus: false }
+  );
 
-  // Statistik (Berdasarkan Kolom L / Index 11)
-  const totalSiswa = students?.length || 0;
-  const totalLulus = students?.filter(row => row[11]?.toString().toUpperCase().trim() === "LULUS").length || 0;
-  const totalTidakLulus = totalSiswa - totalLulus;
+  // Fetch data metrik dari Supabase
+  useEffect(() => {
+    async function loadSupabaseCounts() {
+      try {
+        const [resSiswa, resCbt, resPesan] = await Promise.all([
+          getSiswaList(),
+          getUlanganList(),
+          getPesanKontakList(),
+        ]);
 
-  // Filter Pencarian
-  const filteredData = students?.filter(row => 
-    row[1]?.toString().toLowerCase().includes(searchTerm.toLowerCase()) ||
-    row[4]?.toString().includes(searchTerm)
-  ) || [];
+        if (resSiswa.success) setDbSiswaCount(resSiswa.data.length);
+        if (resCbt.success) setCbtCount(resCbt.data.length);
+        if (resPesan.success) setPesanCount(resPesan.data.filter((p) => !p.is_read).length);
+      } catch (err) {
+        console.error('Gagal memuat statistik Supabase:', err);
+      }
+    }
+
+    loadSupabaseCounts();
+  }, []);
+
+  const totalSiswaSheets = sheetData?.total || 0;
+  const totalLulusSheets = sheetData?.lulus || 0;
+  const totalTidakLulusSheets = sheetData?.tidakLulus || 0;
+
+  const filteredStudents = (sheetData?.students || []).filter(
+    (s) =>
+      s.nama.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      s.nisn.includes(searchTerm)
+  );
 
   return (
-    <div className="min-h-screen bg-slate-50 flex flex-col md:flex-row">
-      {/* SIDEBAR */}
-      <aside className="w-full md:w-64 bg-slate-900 text-white p-6 flex flex-col">
-        <div className="flex items-center gap-3 mb-10">
-          <GraduationCap className="text-blue-500" size={28} />
-          <h2 className="font-black text-lg italic tracking-tight uppercase">Admin SMPN 18</h2>
-        </div>
-        <nav className="flex-1 space-y-2 font-bold">
-          <div className="bg-blue-600 p-4 rounded-xl flex items-center gap-3"><List size={18} /> Data Kelulusan</div>
-        </nav>
-        <button onClick={handleLogout} className="mt-10 p-4 text-red-400 hover:bg-red-500/10 rounded-xl transition font-bold flex items-center gap-3">
-          <LogOut size={18} /> KELUAR
-        </button>
-      </aside>
+    <div className="space-y-8">
+      <Topbar
+        title="Dashboard Administrator"
+        subtitle="Pusat Kendali Website SMP Negeri 18 Buton Tengah"
+      />
 
-      {/* MAIN */}
-      <main className="flex-1 p-6 md:p-10">
-        <div className="flex justify-between items-center mb-10">
+      {/* Grid Statistik Utama */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+        {/* Siswa Supabase */}
+        <div className="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm flex items-center justify-between">
           <div>
-            <h1 className="text-3xl font-black text-slate-800">Dashboard Admin</h1>
-            <p className="text-slate-500 font-medium italic">Sinkronisasi Google Sheets Aktif</p>
+            <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">Siswa di Database</p>
+            <p className="text-3xl font-black text-slate-800 mt-1">{dbSiswaCount}</p>
+            <span className="text-[10px] text-blue-600 font-bold mt-1 inline-block">Database Supabase</span>
           </div>
-          <button onClick={() => mutate()} disabled={isValidating} className="bg-white border-2 border-slate-200 px-6 py-3 rounded-2xl flex items-center gap-2 font-bold shadow-sm active:scale-95 transition-all">
-            <RefreshCw size={18} className={isValidating ? "animate-spin text-blue-600" : ""} />
-            {isValidating ? "Memuat..." : "Refresh Data"}
-          </button>
+          <div className="w-12 h-12 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center">
+            <Users size={24} />
+          </div>
         </div>
 
-        {/* STATS */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
-          <StatBox label="Total Peserta" value={totalSiswa} color="bg-blue-50" textColor="text-blue-600" />
-          <StatBox label="Lulus" value={totalLulus} color="bg-emerald-50" textColor="text-emerald-600" />
-          <StatBox label="Tidak Lulus" value={totalTidakLulus} color="bg-rose-50" textColor="text-rose-600" />
+        {/* Peserta Kelulusan Google Sheets */}
+        <div className="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm flex items-center justify-between">
+          <div>
+            <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">Peserta Kelulusan</p>
+            <p className="text-3xl font-black text-slate-800 mt-1">{totalSiswaSheets}</p>
+            <span className="text-[10px] text-emerald-600 font-bold mt-1 inline-block">
+              {totalLulusSheets} Lulus / {totalTidakLulusSheets} Belum
+            </span>
+          </div>
+          <div className="w-12 h-12 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center">
+            <Award size={24} />
+          </div>
         </div>
 
-        {/* TABLE */}
-        <div className="bg-white rounded-[40px] shadow-sm border border-slate-200 overflow-hidden">
-          <div className="p-6 border-b flex justify-between items-center gap-4">
-            <h3 className="font-black text-xs uppercase tracking-widest text-slate-400">Tabel Kelulusan</h3>
-            <div className="relative w-full md:w-72">
-              <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-300" size={18} />
-              <input type="text" placeholder="Cari Nama/NISN..." value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} className="w-full pl-12 pr-4 py-3 bg-slate-50 border-2 border-slate-100 rounded-2xl focus:border-blue-600 outline-none font-bold text-sm" />
+        {/* Ulangan CBT Aktif */}
+        <div className="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm flex items-center justify-between">
+          <div>
+            <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">Ulangan CBT</p>
+            <p className="text-3xl font-black text-slate-800 mt-1">{cbtCount}</p>
+            <span className="text-[10px] text-purple-600 font-bold mt-1 inline-block">Ujian Online</span>
+          </div>
+          <div className="w-12 h-12 rounded-2xl bg-purple-50 text-purple-600 flex items-center justify-center">
+            <BookOpen size={24} />
+          </div>
+        </div>
+
+        {/* Pesan Kontak Masuk */}
+        <div className="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm flex items-center justify-between">
+          <div>
+            <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">Pesan Masuk</p>
+            <p className="text-3xl font-black text-slate-800 mt-1">{pesanCount}</p>
+            <span className="text-[10px] text-amber-600 font-bold mt-1 inline-block">Belum Dibaca</span>
+          </div>
+          <div className="w-12 h-12 rounded-2xl bg-amber-50 text-amber-600 flex items-center justify-center">
+            <MessageSquare size={24} />
+          </div>
+        </div>
+      </div>
+
+      {/* Tabel Preview Kelulusan Google Spreadsheet */}
+      <div className="bg-white rounded-3xl shadow-sm border border-slate-200 overflow-hidden">
+        <div className="p-6 border-b border-slate-100 flex flex-col sm:flex-row justify-between sm:items-center gap-4">
+          <div>
+            <div className="flex items-center gap-2">
+              <h3 className="font-black text-sm uppercase tracking-wider text-slate-800">
+                Data Kelulusan Google Spreadsheet
+              </h3>
+              <span className="bg-emerald-50 text-emerald-700 text-[10px] font-extrabold px-2 py-0.5 rounded-md">
+                Live Google Sheets
+              </span>
             </div>
+            <p className="text-xs text-slate-400 mt-0.5">
+              Data kelulusan resmi ditarik secara otomatis dari spreadsheet sekolah
+            </p>
           </div>
-          <div className="overflow-x-auto">
-            <table className="w-full text-left">
-              <thead className="bg-slate-50 text-slate-400 font-black text-[10px] uppercase tracking-[0.2em]">
-                <tr><th className="px-8 py-5">Nama</th><th className="px-8 py-5">NISN</th><th className="px-8 py-5">Tgl Lahir</th><th className="px-8 py-5">Status</th></tr>
-              </thead>
-              <tbody className="divide-y divide-slate-100 font-bold text-sm text-slate-600">
-                {filteredData.map((row, i) => (
-                  <tr key={i} className="hover:bg-slate-50 transition-colors">
-                    <td className="px-8 py-4">{row[1]}</td>
-                    <td className="px-8 py-4">{row[4]}</td>
-                    <td className="px-8 py-4">{row[6]}</td>
-                    <td className="px-8 py-4">
-                      <span className={`px-3 py-1 rounded-lg text-[10px] font-black uppercase ${row[11]?.includes("TIDAK") ? 'bg-red-100 text-red-600' : 'bg-green-100 text-green-600'}`}>
-                        {row[11] || "LULUS"}
+
+          <div className="flex items-center gap-3">
+            <div className="relative w-full sm:w-64">
+              <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" size={16} />
+              <input
+                type="text"
+                placeholder="Cari Nama atau NISN..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="w-full pl-9 pr-3.5 py-2 bg-slate-50 border border-slate-200 rounded-xl focus:border-blue-600 outline-none text-xs font-semibold text-slate-800"
+              />
+            </div>
+            <button
+              onClick={() => mutate()}
+              disabled={isValidating}
+              className="p-2.5 bg-slate-100 hover:bg-slate-200 rounded-xl text-slate-700 transition disabled:opacity-50 shrink-0 cursor-pointer"
+              title="Refresh Data Spreadsheet"
+            >
+              <RefreshCw size={16} className={isValidating ? 'animate-spin text-blue-600' : ''} />
+            </button>
+          </div>
+        </div>
+
+        <div className="overflow-x-auto">
+          <table className="w-full text-left text-xs">
+            <thead className="bg-slate-50 text-slate-400 font-black uppercase tracking-wider text-[10px]">
+              <tr>
+                <th className="px-6 py-4">No</th>
+                <th className="px-6 py-4">Nama Lengkap</th>
+                <th className="px-6 py-4">NISN</th>
+                <th className="px-6 py-4">Tanggal Lahir</th>
+                <th className="px-6 py-4">Jenis Kelamin</th>
+                <th className="px-6 py-4">Status Kelulusan</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-slate-100 font-semibold text-slate-700">
+              {filteredStudents.length > 0 ? (
+                filteredStudents.slice(0, 8).map((row, i) => (
+                  <tr key={i} className="hover:bg-slate-50/80 transition-colors">
+                    <td className="px-6 py-3.5 text-slate-400">{i + 1}</td>
+                    <td className="px-6 py-3.5 font-bold text-slate-900">{row.nama}</td>
+                    <td className="px-6 py-3.5 font-mono">{row.nisn}</td>
+                    <td className="px-6 py-3.5">{row.tanggal_lahir}</td>
+                    <td className="px-6 py-3.5">{row.jk === 'L' ? 'L' : 'P'}</td>
+                    <td className="px-6 py-3.5">
+                      <span
+                        className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-[10px] font-black uppercase ${
+                          row.status === 'LULUS'
+                            ? 'bg-emerald-100 text-emerald-700'
+                            : 'bg-rose-100 text-rose-700'
+                        }`}
+                      >
+                        {row.status === 'LULUS' ? <CheckCircle2 size={12} /> : <XCircle size={12} />}
+                        {row.status}
                       </span>
                     </td>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan={6} className="px-6 py-8 text-center text-slate-400">
+                    {isValidating ? 'Mengambil data dari Google Spreadsheet...' : 'Tidak ada data siswa ditemukan.'}
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
         </div>
-      </main>
-    </div>
-  );
-}
 
-function StatBox({ label, value, color, textColor }) {
-  return (
-    <div className={`${color} p-8 rounded-[35px] border border-white shadow-sm`}>
-      <p className={`text-[10px] font-black uppercase tracking-widest mb-1 ${textColor}`}>{label}</p>
-      <p className="text-4xl font-black text-slate-800 tracking-tighter">{value}</p>
+        <div className="p-4 border-t border-slate-100 bg-slate-50/50 flex flex-col sm:flex-row justify-between items-center text-xs text-slate-500 gap-2">
+          <span>Menampilkan data kelulusan kelas IX SMPN 18 Buton Tengah</span>
+          <Link
+            href="/admin/kelulusan"
+            className="text-blue-600 hover:underline font-bold inline-flex items-center gap-1"
+          >
+            Buka Panel Kelulusan Lengkap &rarr;
+          </Link>
+        </div>
+      </div>
     </div>
   );
 }

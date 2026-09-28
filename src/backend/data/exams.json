@@ -1,0 +1,292 @@
+[
+  {
+    "judul": "Soal Bahasa Indonesia SMP",
+    "deskripsi": null,
+    "mapel": "Bahasa Indonesia",
+    "kelas": "IX",
+    "durasi_menit": 60,
+    "is_active": true,
+    "waktu_mulai": null,
+    "waktu_selesai": null,
+    "tipe_ujian": "pdf",
+    "file_pdf_url": "/uploads/soal/soal_1789522597263_Soal_Bahasa_Indonesia_SMP.pdf",
+    "file_pdf_nama": "Soal_Bahasa_Indonesia_SMP.pdf",
+    "file_pdf_size": "24.5 KB",
+    "total_soal_pdf": 20,
+    "opsi_jawaban": "ABCD",
+    "kunci_jawaban_pdf": {
+      "1": "B",
+      "2": "B",
+      "3": "C",
+      "4": "C",
+      "5": "D",
+      "6": "B",
+      "7": "A",
+      "8": "B",
+      "9": "B",
+      "10": "B",
+      "11": "C",
+      "12": "A",
+      "13": "B",
+      "14": "C",
+      "15": "A",
+      "16": "A",
+      "17": "B",
+      "18": "D",
+      "19": "C",
+      "20": "B"
+    },
+    "bobot_per_soal": 10,
+    "soal_pg": [
+      {
+        "nomor": 1,
+        "pertanyaan": "Teks yang berisi gambaran suatu objek, tempat, atau peristiwa secara rinci sehingga pembaca seolah- olah dapat melihat, mendengar, atau merasakannya sendiri disebut teks...",
+        "pilihan_a": "Eksposisi",
+        "pilihan_b": "Deskripsi",
+        "pilihan_c": "Narasi",
+        "pilihan_d": "Argumentasi",
+        "pilihan_e": "",
+        "kunci_jawaban": "B",
+        "bobot": 10
+      },
+      {
+        "nomor": 2,
+        "pertanyaan": "Bagian dalam teks prosedur yang menjelaskan tentang tahapan-tahapan yang harus dilakukan untuk mencapai suatu tujuan adalah...",
+        "pilihan_a": "Tujuan",
+        "pilihan_b": "Langkah-langkah",
+        "pilihan_c": "Penegasan ulang",
+        "pilihan_d": "Tesis",
+        "pilihan_e": "",
+        "kunci_jawaban": "B",
+        "bobot": 10
+      },
+      {
+        "nomor": 3,
+        "pertanyaan": "Unsur berita yang menanyakan mengenai tempat terjadinya suatu peristiwa adalah...",
+        "pilihan_a": "Apa",
+        "pilihan_b": "Kapan",
+        "pilihan_c": "Di mana",
+        "pilihan_d": "Siapa",
+        "pilihan_e": "",
+        "kunci_jawaban": "C",
+        "bobot": 10
+      },
+      {
+        "nomor": 4,
+        "pertanyaan": "\"Angin malam menari-nari menyapa dedaunan di halaman rumah.\" Majas yang digunakan dalam kalimat tersebut adalah majas...",
+        "pilihan_a": "Metafora",
+        "pilihan_b": "Hiperbola",
+        "pilihan_c": "Personifikasi",
+        "pilihan_d": "Litotes",
+        "pilihan_e": "",
+        "kunci_jawaban": "C",
+        "bobot": 10
+      },
+      {
+        "nomor": 5,
+        "pertanyaan": "Pesan moral atau nasihat yang ingin disampaikan pengarang kepada pembaca melalui sebuah cerita pendek disebut...",
+        "pilihan_a": "Tema",
+        "pilihan_b": "Alur",
+        "pilihan_c": "Latar",
+        "pilihan_d": "Amanat",
+        "pilihan_e": "",
+        "kunci_jawaban": "D",
+        "bobot": 10
+      },
+      {
+        "nomor": 6,
+        "pertanyaan": "Surat yang dikirimkan oleh suatu lembaga atau instansi pemerintah kepada instansi lain atau perorangan demi keperluan resmi disebut...",
+        "pilihan_a": "Surat pribadi",
+        "pilihan_b": "Surat dinas",
+        "pilihan_c": "Surat lamaran pekerjaan",
+        "pilihan_d": "Surat pembaca",
+        "pilihan_e": "",
+        "kunci_jawaban": "B",
+        "bobot": 10
+      },
+      {
+        "nomor": 7,
+        "pertanyaan": "Teks yang berisi penjelasan tentang proses terjadinya suatu fenomena alam maupun sosial disebut teks...",
+        "pilihan_a": "Eksplanasi",
+        "pilihan_b": "Laporan Hasil Observasi",
+        "pilihan_c": "Prosedur",
+        "pilihan_d": "Anekdot",
+        "pilihan_e": "",
+        "kunci_jawaban": "A",
+        "bobot": 10
+      },
+      {
+        "nomor": 8,
+        "pertanyaan": "Dalam struktur pantun, baris pertama dan kedua berfungsi sebagai...",
+        "pilihan_a": "Isi",
+        "pilihan_b": "Sampiran",
+        "pilihan_c": "Rima",
+        "pilihan_d": "Bait",
+        "pilihan_e": "",
+        "kunci_jawaban": "B",
+        "bobot": 10
+      },
+      {
+        "nomor": 9,
+        "pertanyaan": "Penulisan kata baku yang benar menurut Kamus Besar Bahasa Indonesia (KBBI) di bawah ini adalah...",
+        "pilihan_a": "Apotik",
+        "pilihan_b": "Apotek",
+        "pilihan_c": "Antri",
+        "pilihan_d": "Sistim",
+        "pilihan_e": "",
+        "kunci_jawaban": "B",
+        "bobot": 10
+      },
+      {
+        "nomor": 10,
+        "pertanyaan": "Kalimat yang berisi ide, gagasan, atau pendapat seseorang yang belum tentu kebenarannya disebut kalimat...",
+        "pilihan_a": "Fakta",
+        "pilihan_b": "Opini",
+        "pilihan_c": "Objektif",
+        "pilihan_d": "Deklaratif",
+        "pilihan_e": "",
+        "kunci_jawaban": "B",
+        "bobot": 10
+      },
+      {
+        "nomor": 11,
+        "pertanyaan": "Pidato yang bertujuan untuk mengajak, membujuk, atau memengaruhi pendengar agar melakukan sesuatu disebut pidato...",
+        "pilihan_a": "Deskriptif",
+        "pilihan_b": "Argumentatif",
+        "pilihan_c": "Persuasif",
+        "pilihan_d": "Rekreatif",
+        "pilihan_e": "",
+        "kunci_jawaban": "C",
+        "bobot": 10
+      },
+      {
+        "nomor": 12,
+        "pertanyaan": "Struktur paling awal dalam penyusunan teks laporan hasil observasi adalah...",
+        "pilihan_a": "Definisi umum (Pernyataan umum)",
+        "pilihan_b": "Deskripsi bagian",
+        "pilihan_c": "Simpulan",
+        "pilihan_d": "Langkah-langkah",
+        "pilihan_e": "",
+        "kunci_jawaban": "A",
+        "bobot": 10
+      },
+      {
+        "nomor": 13,
+        "pertanyaan": "Sinonim atau persamaan kata dari kata \"Dusta\" adalah...",
+        "pilihan_a": "Jujur",
+        "pilihan_b": "Bohong",
+        "pilihan_c": "Benar",
+        "pilihan_d": "Tepat",
+        "pilihan_e": "",
+        "kunci_jawaban": "B",
+        "bobot": 10
+      },
+      {
+        "nomor": 14,
+        "pertanyaan": "Tokoh utama dalam sebuah teks cerita fabel biasanya diperankan oleh...",
+        "pilihan_a": "Manusia",
+        "pilihan_b": "Tumbuhan",
+        "pilihan_c": "Binatang",
+        "pilihan_d": "Benda mati",
+        "pilihan_e": "",
+        "kunci_jawaban": "C",
+        "bobot": 10
+      },
+      {
+        "nomor": 15,
+        "pertanyaan": "Teks yang berisi penilaian, pertimbangan, atau ulasan terhadap suatu karya (seperti film, buku, atau drama) sering juga disebut dengan...",
+        "pilihan_a": "Resensi",
+        "pilihan_b": "Resume",
+        "pilihan_c": "Sinopsis",
+        "pilihan_d": "Biografi",
+        "pilihan_e": "",
+        "kunci_jawaban": "A",
+        "bobot": 10
+      },
+      {
+        "nomor": 16,
+        "pertanyaan": "Ide atau gagasan pokok dalam sebuah paragraf deduktif terletak pada...",
+        "pilihan_a": "Awal paragraf",
+        "pilihan_b": "Akhir paragraf",
+        "pilihan_c": "Tengah paragraf",
+        "pilihan_d": "Awal dan akhir paragraf",
+        "pilihan_e": "",
+        "kunci_jawaban": "A",
+        "bobot": 10
+      },
+      {
+        "nomor": 17,
+        "pertanyaan": "Percakapan antar tokoh dalam sebuah naskah drama atau pementasan disebut...",
+        "pilihan_a": "Monolog",
+        "pilihan_b": "Dialog",
+        "pilihan_c": "Prolog",
+        "pilihan_d": "Epilog",
+        "pilihan_e": "",
+        "kunci_jawaban": "B",
+        "bobot": 10
+      },
+      {
+        "nomor": 18,
+        "pertanyaan": "Kalimat majemuk setara biasanya dihubungkan dengan kata penghubung (konjungsi) di bawah ini, kecuali...",
+        "pilihan_a": "Dan",
+        "pilihan_b": "Atau",
+        "pilihan_c": "Tetapi",
+        "pilihan_d": "Agar",
+        "pilihan_e": "",
+        "kunci_jawaban": "D",
+        "bobot": 10
+      },
+      {
+        "nomor": 19,
+        "pertanyaan": "Berikut ini yang termasuk ke dalam jenis buku nonfiksi adalah...",
+        "pilihan_a": "Novel remaja",
+        "pilihan_b": "Antologi puisi",
+        "pilihan_c": "Buku pelajaran sains",
+        "pilihan_d": "Kumpulan cerita pendek",
+        "pilihan_e": "",
+        "kunci_jawaban": "C",
+        "bobot": 10
+      },
+      {
+        "nomor": 20,
+        "pertanyaan": "Cerita singkat yang menarik karena lucu dan mengesankan, yang biasanya juga berisi sindiran atau kritikan terhadap tokoh publik, disebut teks...",
+        "pilihan_a": "Humor",
+        "pilihan_b": "Anekdot",
+        "pilihan_c": "Eksposisi",
+        "pilihan_d": "Narasi",
+        "pilihan_e": "",
+        "kunci_jawaban": "B",
+        "bobot": 10
+      }
+    ],
+    "soal_essay": [
+      {
+        "nomor": 1,
+        "pertanyaan": "Sebutkan dan jelaskan secara singkat 4 (empat) unsur intrinsik yang terdapat dalam sebuah cerita pendek (cerpen)!",
+        "bobot": 20
+      },
+      {
+        "nomor": 2,
+        "pertanyaan": "Jelaskan perbedaan mendasar antara surat dinas dan surat pribadi dari segi bahasa yang digunakan!",
+        "bobot": 20
+      },
+      {
+        "nomor": 3,
+        "pertanyaan": "Apa yang dimaksud dengan teks eksplanasi? Sebutkan urutan struktur dari teks eksplanasi tersebut!",
+        "bobot": 20
+      },
+      {
+        "nomor": 4,
+        "pertanyaan": "Buatlah 1 (satu) bait pantun nasehat karya Anda sendiri!",
+        "bobot": 20
+      },
+      {
+        "nomor": 5,
+        "pertanyaan": "Jelaskan perbedaan antara kalimat fakta dan kalimat opini, kemudian berikan masing-masing satu contohnya!",
+        "bobot": 20
+      }
+    ],
+    "id": "exam-1789522621923-0qbks",
+    "created_at": "2026-09-16T01:37:01.923Z"
+  }
+]

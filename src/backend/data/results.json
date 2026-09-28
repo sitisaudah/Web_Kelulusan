@@ -1,0 +1,350 @@
+[
+  {
+    "ulangan_id": "exam-1789522621923-0qbks",
+    "siswa_id": null,
+    "profile_id": "admin-local-id",
+    "nilai": 0,
+    "nilai_pg": 0,
+    "nilai_essay": 0,
+    "status_koreksi": "DIDISKUALIFIKASI",
+    "is_disqualified": true,
+    "catatan_pelanggaran": "Didiskualifikasi otomatis oleh sistem: Terdeteksi melanggar tata tertib lebih dari 3 kali. Pelanggaran terakhir: Keluar dari mode Layar Penuh (Fullscreen).",
+    "koreksi_essay": {},
+    "catatan_guru": "Siswa didiskualifikasi otomatis (terdeteksi 4x pelanggaran layar/tab).",
+    "total_benar": 0,
+    "total_salah": 20,
+    "total_soal_pg": 20,
+    "total_soal_essay": 5,
+    "jawaban_siswa": {},
+    "jawaban_pg": {},
+    "jawaban_essay": {},
+    "submitted_at": "2026-09-16T01:39:15.513Z",
+    "siswa": {
+      "id": "admin-local-id",
+      "nama": "Administrator SMPN 18 Buton Tengah",
+      "nisn": "admin",
+      "kelas": "IX"
+    },
+    "profile": {
+      "nama_lengkap": "Administrator SMPN 18 Buton Tengah",
+      "email": "admin@smpn18.sch.id"
+    },
+    "ulangan": {
+      "id": "exam-1789522621923-0qbks",
+      "judul": "Soal Bahasa Indonesia SMP",
+      "mapel": "Bahasa Indonesia",
+      "kelas": "IX",
+      "tipe_ujian": "pdf",
+      "soal_essay": [
+        {
+          "nomor": 1,
+          "pertanyaan": "Sebutkan dan jelaskan secara singkat 4 (empat) unsur intrinsik yang terdapat dalam sebuah cerita pendek (cerpen)!",
+          "bobot": 20
+        },
+        {
+          "nomor": 2,
+          "pertanyaan": "Jelaskan perbedaan mendasar antara surat dinas dan surat pribadi dari segi bahasa yang digunakan!",
+          "bobot": 20
+        },
+        {
+          "nomor": 3,
+          "pertanyaan": "Apa yang dimaksud dengan teks eksplanasi? Sebutkan urutan struktur dari teks eksplanasi tersebut!",
+          "bobot": 20
+        },
+        {
+          "nomor": 4,
+          "pertanyaan": "Buatlah 1 (satu) bait pantun nasehat karya Anda sendiri!",
+          "bobot": 20
+        },
+        {
+          "nomor": 5,
+          "pertanyaan": "Jelaskan perbedaan antara kalimat fakta dan kalimat opini, kemudian berikan masing-masing satu contohnya!",
+          "bobot": 20
+        }
+      ]
+    },
+    "id": "res-1789522755519-3hcgd"
+  },
+  {
+    "ulangan_id": "exam-1789522621923-0qbks",
+    "siswa_id": null,
+    "profile_id": "admin-local-id",
+    "nilai": 0,
+    "nilai_pg": 0,
+    "nilai_essay": 0,
+    "status_koreksi": "DIDISKUALIFIKASI",
+    "is_disqualified": true,
+    "catatan_pelanggaran": "Didiskualifikasi otomatis oleh sistem: Terdeteksi melanggar tata tertib lebih dari 3 kali. Pelanggaran terakhir: Keluar dari mode Layar Penuh (Fullscreen).",
+    "koreksi_essay": {},
+    "catatan_guru": "Siswa didiskualifikasi otomatis (terdeteksi 4x pelanggaran layar/tab).",
+    "total_benar": 0,
+    "total_salah": 20,
+    "total_soal_pg": 20,
+    "total_soal_essay": 5,
+    "jawaban_siswa": {},
+    "jawaban_pg": {},
+    "jawaban_essay": {},
+    "submitted_at": "2026-09-16T01:39:13.003Z",
+    "siswa": {
+      "id": "admin-local-id",
+      "nama": "Administrator SMPN 18 Buton Tengah",
+      "nisn": "admin",
+      "kelas": "IX"
+    },
+    "profile": {
+      "nama_lengkap": "Administrator SMPN 18 Buton Tengah",
+      "email": "admin@smpn18.sch.id"
+    },
+    "ulangan": {
+      "id": "exam-1789522621923-0qbks",
+      "judul": "Soal Bahasa Indonesia SMP",
+      "mapel": "Bahasa Indonesia",
+      "kelas": "IX",
+      "tipe_ujian": "pdf",
+      "soal_essay": [
+        {
+          "nomor": 1,
+          "pertanyaan": "Sebutkan dan jelaskan secara singkat 4 (empat) unsur intrinsik yang terdapat dalam sebuah cerita pendek (cerpen)!",
+          "bobot": 20
+        },
+        {
+          "nomor": 2,
+          "pertanyaan": "Jelaskan perbedaan mendasar antara surat dinas dan surat pribadi dari segi bahasa yang digunakan!",
+          "bobot": 20
+        },
+        {
+          "nomor": 3,
+          "pertanyaan": "Apa yang dimaksud dengan teks eksplanasi? Sebutkan urutan struktur dari teks eksplanasi tersebut!",
+          "bobot": 20
+        },
+        {
+          "nomor": 4,
+          "pertanyaan": "Buatlah 1 (satu) bait pantun nasehat karya Anda sendiri!",
+          "bobot": 20
+        },
+        {
+          "nomor": 5,
+          "pertanyaan": "Jelaskan perbedaan antara kalimat fakta dan kalimat opini, kemudian berikan masing-masing satu contohnya!",
+          "bobot": 20
+        }
+      ]
+    },
+    "id": "res-1789522753046-au9h8"
+  },
+  {
+    "ulangan_id": "exam-1789518938941-mp2fm",
+    "siswa_id": null,
+    "profile_id": "admin-local-id",
+    "nilai": 20,
+    "nilai_pg": 20,
+    "nilai_essay": null,
+    "status_koreksi": "Menunggu Koreksi Essay",
+    "koreksi_essay": {},
+    "catatan_guru": "",
+    "total_benar": 4,
+    "total_salah": 16,
+    "total_soal_pg": 20,
+    "total_soal_essay": 5,
+    "jawaban_siswa": {
+      "1": "A",
+      "2": "B",
+      "3": "A",
+      "4": "D",
+      "5": "C",
+      "6": "C",
+      "7": "B",
+      "8": "C",
+      "9": "B",
+      "10": "A",
+      "11": "B",
+      "12": "D",
+      "13": "B",
+      "14": "D",
+      "15": "C",
+      "16": "C",
+      "17": "D",
+      "18": "D",
+      "19": "A",
+      "20": "A"
+    },
+    "jawaban_pg": {
+      "1": "A",
+      "2": "B",
+      "3": "A",
+      "4": "D",
+      "5": "C",
+      "6": "C",
+      "7": "B",
+      "8": "C",
+      "9": "B",
+      "10": "A",
+      "11": "B",
+      "12": "D",
+      "13": "B",
+      "14": "D",
+      "15": "C",
+      "16": "C",
+      "17": "D",
+      "18": "D",
+      "19": "A",
+      "20": "A"
+    },
+    "jawaban_essay": {},
+    "submitted_at": "2026-09-16T00:39:20.606Z",
+    "siswa": {
+      "id": "admin-local-id",
+      "nama": "Administrator SMPN 18 Buton Tengah",
+      "nisn": "admin",
+      "kelas": "IX"
+    },
+    "profile": {
+      "nama_lengkap": "Administrator SMPN 18 Buton Tengah",
+      "email": "admin@smpn18.sch.id"
+    },
+    "ulangan": {
+      "id": "exam-1789518938941-mp2fm",
+      "judul": "Soal Bahasa Indonesia SMP",
+      "mapel": "Bahasa Indonesia",
+      "kelas": "IX",
+      "tipe_ujian": "pdf",
+      "soal_essay": [
+        {
+          "nomor": 1,
+          "pertanyaan": "Sebutkan dan jelaskan secara singkat 4 (empat) unsur intrinsik yang terdapat dalam sebuah cerita pendek (cerpen)!",
+          "bobot": 20
+        },
+        {
+          "nomor": 2,
+          "pertanyaan": "Jelaskan perbedaan mendasar antara surat dinas dan surat pribadi dari segi bahasa yang digunakan!",
+          "bobot": 20
+        },
+        {
+          "nomor": 3,
+          "pertanyaan": "Apa yang dimaksud dengan teks eksplanasi? Sebutkan urutan struktur dari teks eksplanasi tersebut!",
+          "bobot": 20
+        },
+        {
+          "nomor": 4,
+          "pertanyaan": "Buatlah 1 (satu) bait pantun nasehat karya Anda sendiri!",
+          "bobot": 20
+        },
+        {
+          "nomor": 5,
+          "pertanyaan": "Jelaskan perbedaan antara kalimat fakta dan kalimat opini, kemudian berikan masing-masing satu contohnya!",
+          "bobot": 20
+        }
+      ]
+    },
+    "id": "res-1789519160621-izy65"
+  },
+  {
+    "ulangan_id": "exam-1789517915913-y06r1",
+    "siswa_id": null,
+    "profile_id": "admin-local-id",
+    "nilai": 0,
+    "nilai_pg": 0,
+    "nilai_essay": null,
+    "status_koreksi": "Selesai",
+    "koreksi_essay": {},
+    "catatan_guru": "",
+    "total_benar": 0,
+    "total_salah": 10,
+    "total_soal_pg": 10,
+    "total_soal_essay": 0,
+    "jawaban_siswa": {},
+    "jawaban_pg": {},
+    "jawaban_essay": {},
+    "submitted_at": "2026-09-16T00:21:45.779Z",
+    "siswa": {
+      "id": "admin-local-id",
+      "nama": "Administrator SMPN 18 Buton Tengah",
+      "nisn": "admin",
+      "kelas": "IX"
+    },
+    "profile": {
+      "nama_lengkap": "Administrator SMPN 18 Buton Tengah",
+      "email": "admin@smpn18.sch.id"
+    },
+    "ulangan": {
+      "id": "exam-1789517915913-y06r1",
+      "judul": "Soal Bahasa Indonesia SMP",
+      "mapel": "Bahasa Indonesia",
+      "kelas": "IX",
+      "tipe_ujian": "pdf",
+      "soal_essay": []
+    },
+    "id": "res-1789518105788-yf5bz"
+  },
+  {
+    "ulangan_id": "exam-1789472538636-513ep",
+    "siswa_id": null,
+    "profile_id": "admin-local-id",
+    "nilai": 0,
+    "nilai_pg": 0,
+    "nilai_essay": null,
+    "status_koreksi": "Menunggu Koreksi Essay",
+    "koreksi_essay": {},
+    "catatan_guru": "",
+    "total_benar": 0,
+    "total_salah": 20,
+    "total_soal_pg": 20,
+    "total_soal_essay": 5,
+    "jawaban_siswa": {
+      "1": "A",
+      "3": "B"
+    },
+    "jawaban_pg": {
+      "1": "A",
+      "3": "B"
+    },
+    "jawaban_essay": {
+      "1": ""
+    },
+    "submitted_at": "2026-09-15T12:13:19.332Z",
+    "siswa": {
+      "id": "admin-local-id",
+      "nama": "Administrator SMPN 18 Buton Tengah",
+      "nisn": "admin",
+      "kelas": "IX"
+    },
+    "profile": {
+      "nama_lengkap": "Administrator SMPN 18 Buton Tengah",
+      "email": "admin@smpn18.sch.id"
+    },
+    "ulangan": {
+      "id": "exam-1789472538636-513ep",
+      "judul": "Soal Bahasa Indonesia SMP",
+      "mapel": "Bahasa Indonesia",
+      "kelas": "IX",
+      "tipe_ujian": "pdf",
+      "soal_essay": [
+        {
+          "nomor": 1,
+          "pertanyaan": "Sebutkan dan jelaskan secara singkat 4 (empat) unsur intrinsik yang terdapat dalam sebuah cerita pendek (cerpen)!",
+          "bobot": 20
+        },
+        {
+          "nomor": 2,
+          "pertanyaan": "Jelaskan perbedaan mendasar antara surat dinas dan surat pribadi dari segi bahasa yang digunakan!",
+          "bobot": 20
+        },
+        {
+          "nomor": 3,
+          "pertanyaan": "Apa yang dimaksud dengan teks eksplanasi? Sebutkan urutan struktur dari teks eksplanasi tersebut!",
+          "bobot": 20
+        },
+        {
+          "nomor": 4,
+          "pertanyaan": "Buatlah 1 (satu) bait pantun nasehat karya Anda sendiri!",
+          "bobot": 20
+        },
+        {
+          "nomor": 5,
+          "pertanyaan": "Jelaskan perbedaan antara kalimat fakta dan kalimat opini, kemudian berikan masing-masing satu contohnya!",
+          "bobot": 20
+        }
+      ]
+    },
+    "id": "res-1789474399337-111gs"
+  }
+]
