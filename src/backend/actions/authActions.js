@@ -10,12 +10,93 @@
 import { createServerClient } from '@/backend/lib/supabase';
 import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
-import { getAllGraduationStudents } from '@/backend/services/graduationService';
+import { getLocalStudents } from '@/backend/lib/localStudentStore';
+import { getLocalGraduationData } from '@/backend/lib/localGraduationStore';
+
+/**
+ * Cari data profil lengkap siswa berdasarkan NISN dari berkas Excel lokal (students.json / graduation.json)
+ * maupun Supabase. Memastikan seluruh 43 kolom data Dapodik / Excel terambil utuh untuk siswa tersebut.
+ *
+ * @param {string} nisnInput
+ */
+export async function getStudentProfileByNisn(nisnInput) {
+  if (!nisnInput) return null;
+  const clean = nisnInput.toString().trim();
+  const digits = clean.replace(/\D/g, '');
+  const stripped = digits.replace(/^0+/, '');
+
+  const isMatch = (targetNisn) => {
+    if (!targetNisn) return false;
+    const tStr = targetNisn.toString().trim();
+    const tDigits = tStr.replace(/\D/g, '');
+    const tStripped = tDigits.replace(/^0+/, '');
+    return tStr === clean || tDigits === digits || (stripped && tStripped === stripped);
+  };
+
+  let studentObj = null;
+
+  // 1. Prioritas: Ambil data komprehensif dari students.json (43 kolom Dapodik)
+  try {
+    const localStudents = await getLocalStudents();
+    const found = localStudents.find((s) => isMatch(s.nisn));
+    if (found) {
+      studentObj = { ...found };
+    }
+  } catch (err) {
+    console.warn('[getStudentProfileByNisn] Local students check notice:', err.message);
+  }
+
+  // 2. Gabungkan data status / nomor peserta dari graduation.json
+  try {
+    const gradData = await getLocalGraduationData();
+    if (Array.isArray(gradData?.students)) {
+      const foundGrad = gradData.students.find((s) => isMatch(s.nisn));
+      if (foundGrad) {
+        if (!studentObj) {
+          studentObj = { ...foundGrad };
+        } else {
+          studentObj = {
+            ...studentObj,
+            status: foundGrad.status || studentObj.status || 'LULUS',
+            nomor_peserta: foundGrad.nomor_peserta || studentObj.nomor_peserta || studentObj.nipd,
+          };
+        }
+      }
+    }
+  } catch (err) {
+    console.warn('[getStudentProfileByNisn] Local grad check notice:', err.message);
+  }
+
+  // 3. Fallback ke Supabase jika belum ditemukan
+  if (!studentObj) {
+    try {
+      const supabase = await createServerClient();
+      const { data: s } = await supabase
+        .from('siswa')
+        .select('*')
+        .or(`nisn.eq.${clean},nisn.eq.${digits.padStart(10, '0')}`)
+        .maybeSingle();
+      if (s) {
+        studentObj = { ...s };
+      }
+    } catch (err) {}
+  }
+
+  if (studentObj) {
+    // Normalisasi field kunci
+    studentObj.nama = studentObj.nama || 'Siswa SMPN 18';
+    studentObj.nisn = (studentObj.nisn || clean).toString().padStart(10, '0');
+    studentObj.status = studentObj.status || 'LULUS';
+    return studentObj;
+  }
+
+  return null;
+}
 
 /**
  * Login untuk Siswa menggunakan NISN dan Password.
  * Siswa dapat login menggunakan NISN dan password akun Supabase,
- * ATAU menggunakan password default (Tanggal Lahir format YYYY-MM-DD atau '123456')
+ * ATAU menggunakan password default (Tanggal Lahir format YYYY-MM-DD / YYYYMMDD / DDMMYYYY, NISN, atau '123456')
  * yang dicocokkan otomatis dari database kelulusan / Dapodik.
  *
  * @param {{ nisn: string, password: string }} credentials
@@ -29,21 +110,28 @@ export async function loginSiswaAction({ nisn, password }) {
   const cleanPass = password.toString().trim();
   const cookieStore = await cookies();
 
-  // 1. Coba pencocokan data siswa dari Google Sheet / Dapodik
+  // 1. Coba pencocokan data siswa dari Excel Kelulusan / Dapodik Local Students
   try {
-    const sheetStudents = await getAllGraduationStudents();
-    const matched = sheetStudents.find(
-      (s) => s.nisn === cleanNisn || s.nisn.replace(/^0+/, '') === cleanNisn.replace(/^0+/, '')
-    );
+    const matched = await getStudentProfileByNisn(cleanNisn);
 
     if (matched) {
+      const tglLahir = matched.tanggal_lahir?.toString().trim() || '';
+      const tglParts = tglLahir.replace(/[/.]/g, '-').split('-');
+      let ddmmyyyy = '';
+      if (tglParts.length === 3 && tglParts[0].length === 4) {
+        ddmmyyyy = `${tglParts[2].padStart(2, '0')}${tglParts[1].padStart(2, '0')}${tglParts[0]}`;
+      }
+
       const validPasswords = [
-        matched.tanggal_lahir,
-        matched.tanggal_lahir.replace(/-/g, ''),
+        tglLahir,
+        tglLahir.replace(/-/g, ''),
+        ddmmyyyy,
+        matched.nisn,
+        cleanNisn,
         '123456',
         'smpn18',
         'smpn18buteng',
-      ];
+      ].filter(Boolean);
 
       if (validPasswords.includes(cleanPass)) {
         cookieStore.set('siswa_session', 'active', {
@@ -59,21 +147,9 @@ export async function loginSiswaAction({ nisn, password }) {
 
         return {
           success: true,
-          user: { id: `siswa-${matched.nisn}`, email: `${matched.nisn}@siswa.smpn18.sch.id` },
+          user: { id: `siswa-${matched.nisn}`, email: matched.email || `${matched.nisn}@siswa.smpn18.sch.id` },
           profile: { role: 'siswa', nama_lengkap: matched.nama },
-          studentData: {
-            nama: matched.nama,
-            nisn: matched.nisn,
-            nipd: matched.nipd,
-            nik: matched.nik,
-            kelas: 'IX',
-            tempat_lahir: matched.tempat_lahir,
-            tanggal_lahir: matched.tanggal_lahir,
-            jk: matched.jk,
-            agama: matched.agama,
-            nama_ayah: matched.nama_ayah,
-            nama_ibu: matched.nama_ibu,
-          },
+          studentData: matched,
         };
       }
     }
@@ -114,7 +190,7 @@ export async function loginSiswaAction({ nisn, password }) {
 
   return {
     success: false,
-    message: 'NISN atau password salah. (Petunjuk password default: Tanggal Lahir YYYY-MM-DD atau 123456)',
+    message: 'NISN atau password salah. Masukkan Tanggal Lahir Anda (format: YYYY-MM-DD, contoh: 2012-02-11) atau nomor NISN.',
   };
 }
 
@@ -249,12 +325,16 @@ export async function getCurrentUserAction() {
 
       let studentData = null;
       if (profile?.role === 'siswa') {
-        const { data: s } = await supabase
-          .from('siswa')
-          .select('*')
-          .or(`profile_id.eq.${user.id},nisn.eq.${user.email?.split('@')[0]}`)
-          .maybeSingle();
-        studentData = s;
+        const nisnCandidate = user.email?.split('@')[0] || siswaNisnCookie;
+        studentData = await getStudentProfileByNisn(nisnCandidate);
+        if (!studentData) {
+          const { data: s } = await supabase
+            .from('siswa')
+            .select('*')
+            .or(`profile_id.eq.${user.id},nisn.eq.${nisnCandidate}`)
+            .maybeSingle();
+          studentData = s;
+        }
       }
 
       return { user, profile, studentData };
@@ -279,32 +359,14 @@ export async function getCurrentUserAction() {
 
   // Fallback Sesi Siswa
   if (isSiswaActive && siswaNisnCookie) {
-    try {
-      const sheetStudents = await getAllGraduationStudents();
-      const s = sheetStudents.find(
-        (st) => st.nisn === siswaNisnCookie || st.nisn.replace(/^0+/, '') === siswaNisnCookie.replace(/^0+/, '')
-      );
-
-      if (s) {
-        return {
-          user: { id: `siswa-${s.nisn}`, email: `${s.nisn}@siswa.smpn18.sch.id` },
-          profile: { role: 'siswa', nama_lengkap: s.nama },
-          studentData: {
-            nama: s.nama,
-            nisn: s.nisn,
-            nipd: s.nipd,
-            nik: s.nik,
-            kelas: 'IX',
-            tempat_lahir: s.tempat_lahir,
-            tanggal_lahir: s.tanggal_lahir,
-            jk: s.jk,
-            agama: s.agama,
-            nama_ayah: s.nama_ayah,
-            nama_ibu: s.nama_ibu,
-          },
-        };
-      }
-    } catch (e) {}
+    const student = await getStudentProfileByNisn(siswaNisnCookie);
+    if (student) {
+      return {
+        user: { id: `siswa-${student.nisn}`, email: student.email || `${student.nisn}@siswa.smpn18.sch.id` },
+        profile: { role: 'siswa', nama_lengkap: student.nama },
+        studentData: student,
+      };
+    }
 
     return {
       user: { id: 'siswa-session-id', email: `${siswaNisnCookie}@siswa.smpn18.sch.id` },

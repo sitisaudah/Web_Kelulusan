@@ -27,9 +27,10 @@ export default function AdminLogin() {
     setError("");
 
     // Logika Pengecekan
-    if (username === ADMIN_USER && password === ADMIN_PASS) {
-      // Jika Benar: Beri Cookie (Tanda Pengenal) selama 1 jam
-      setCookie('admin_session', 'active', { maxAge: 3600 });
+    const isValidUser = username === ADMIN_USER || username.toLowerCase().trim() === 'admin' || username.toLowerCase().trim() === 'admin@smpn18.sch.id';
+    if (isValidUser && password === ADMIN_PASS) {
+      // Jika Benar: Beri Cookie (Tanda Pengenal) selama 24 jam
+      setCookie('admin_session', 'active', { maxAge: 3600 * 24 });
       
       setTimeout(() => {
         setIsLoading(false);

@@ -4,7 +4,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { 
   CheckCircle2, XCircle, ArrowLeft, Heart, User, 
   Star, Trophy, Award, Landmark, ShieldCheck, 
-  Sparkles, PartyPopper, Medal, GraduationCap, Printer
+  Sparkles, PartyPopper, Medal, GraduationCap, Printer,
+  Users, MapPin
 } from 'lucide-react';
 import Link from 'next/link';
 import confetti from 'canvas-confetti';
@@ -198,32 +199,84 @@ export default function HasilKelulusan() {
               variants={containerVariants}
               initial="hidden"
               animate="show"
-              className="grid grid-cols-1 md:grid-cols-2 gap-10 print:gap-6"
+              className="grid grid-cols-1 md:grid-cols-2 gap-8 print:gap-4"
             >
-              <section className="space-y-6 print:space-y-4">
+              {/* 1. Profil Siswa */}
+              <section className="space-y-4 print:space-y-2">
                 <h4 className="text-slate-400 font-black text-xs tracking-[0.3em] flex items-center gap-3 italic">
                   <User size={18} className="text-blue-500" /> PROFIL SISWA
                 </h4>
-                <div className="space-y-6 border-l-4 border-blue-100 pl-6 print:space-y-3">
+                <div className="space-y-4 border-l-4 border-blue-100 pl-5 print:space-y-2">
                   <motion.div variants={itemVariants}><InfoField label="NAMA LENGKAP" value={data.nama} /></motion.div>
                   <motion.div variants={itemVariants}><InfoField label="NISN" value={data.nisn} /></motion.div>
-                  <motion.div variants={itemVariants}><InfoField label="TEMPAT, TANGGAL LAHIR" value={`${data.tempat_lahir}, ${data.tanggal_lahir}`} /></motion.div>
-                  <motion.div variants={itemVariants}><InfoField label="JENIS KELAMIN" value={data.jk === 'L' ? 'LAKI-LAKI' : 'PEREMPUAN'} /></motion.div>
+                  <motion.div variants={itemVariants}><InfoField label="TEMPAT, TANGGAL LAHIR" value={`${data.tempat_lahir || '-'}, ${data.tanggal_lahir || '-'}`} /></motion.div>
+                  <motion.div variants={itemVariants}><InfoField label="JENIS KELAMIN & ROMBEL" value={`${data.jk === 'L' ? 'LAKI-LAKI' : 'PEREMPUAN'} — Kelas ${data.kelas || 'IX'}`} /></motion.div>
                 </div>
               </section>
 
-              <section className="space-y-6 print:space-y-4">
+              {/* 2. Hasil Akademik & Identitas Resmi */}
+              <section className="space-y-4 print:space-y-2">
                 <h4 className="text-slate-400 font-black text-xs tracking-[0.3em] flex items-center gap-3 italic">
                   <ShieldCheck size={18} className="text-emerald-500" /> HASIL AKADEMIK
                 </h4>
-                <div className="space-y-6 border-l-4 border-emerald-100 pl-6 print:space-y-3">
-                  <motion.div variants={itemVariants}><InfoField label="NIPD / NO INDUK" value={data.nipd} /></motion.div>
-                  <motion.div variants={itemVariants}><InfoField label="NOMOR NIK" value={data.nik} /></motion.div>
-                  <motion.div variants={itemVariants}><InfoField label="AGAMA" value={data.agama} /></motion.div>
+                <div className="space-y-4 border-l-4 border-emerald-100 pl-5 print:space-y-2">
+                  <motion.div variants={itemVariants}><InfoField label="NIPD / NO INDUK" value={data.nipd || '-'} /></motion.div>
+                  <motion.div variants={itemVariants}><InfoField label="NOMOR NIK" value={data.nik || '-'} /></motion.div>
+                  <motion.div variants={itemVariants}><InfoField label="AGAMA" value={data.agama || 'Islam'} /></motion.div>
                   <motion.div variants={itemVariants}>
-                    <div className="p-4 bg-emerald-50 rounded-2xl inline-block border border-emerald-100">
+                    <div className="p-3 bg-emerald-50 rounded-2xl inline-block border border-emerald-100">
                        <InfoField label="STATUS KELULUSAN" value={data.status} highlight />
                     </div>
+                  </motion.div>
+                </div>
+              </section>
+
+              {/* 3. Data Orang Tua & Wali */}
+              <section className="space-y-4 print:space-y-2">
+                <h4 className="text-slate-400 font-black text-xs tracking-[0.3em] flex items-center gap-3 italic">
+                  <Users size={18} className="text-purple-500" /> DATA ORANG TUA / WALI
+                </h4>
+                <div className="space-y-4 border-l-4 border-purple-100 pl-5 print:space-y-2">
+                  <motion.div variants={itemVariants}>
+                    <InfoField 
+                      label="NAMA AYAH KANDUNG" 
+                      value={data.nama_ayah ? `${data.nama_ayah} ${data.pekerjaan_ayah ? `(${data.pekerjaan_ayah})` : ''}` : '-'} 
+                    />
+                  </motion.div>
+                  <motion.div variants={itemVariants}>
+                    <InfoField 
+                      label="NAMA IBU KANDUNG" 
+                      value={data.nama_ibu ? `${data.nama_ibu} ${data.pekerjaan_ibu ? `(${data.pekerjaan_ibu})` : ''}` : '-'} 
+                    />
+                  </motion.div>
+                  {data.nama_wali && data.nama_wali !== '-' && (
+                    <motion.div variants={itemVariants}>
+                      <InfoField 
+                        label="NAMA WALI SISWA" 
+                        value={`${data.nama_wali} ${data.pekerjaan_wali ? `(${data.pekerjaan_wali})` : ''}`} 
+                      />
+                    </motion.div>
+                  )}
+                </div>
+              </section>
+
+              {/* 4. Alamat Tempat Tinggal */}
+              <section className="space-y-4 print:space-y-2">
+                <h4 className="text-slate-400 font-black text-xs tracking-[0.3em] flex items-center gap-3 italic">
+                  <MapPin size={18} className="text-amber-500" /> ALAMAT DOMISILI
+                </h4>
+                <div className="space-y-4 border-l-4 border-amber-100 pl-5 print:space-y-2">
+                  <motion.div variants={itemVariants}>
+                    <InfoField 
+                      label="ALAMAT LENGKAP" 
+                      value={data.alamat_lengkap || data.alamat || 'Tanailandu, Kec. Mawasangka'} 
+                    />
+                  </motion.div>
+                  <motion.div variants={itemVariants}>
+                    <InfoField 
+                      label="DUSUN / KELURAHAN" 
+                      value={`${data.dusun ? `Dusun ${data.dusun}` : '-'}, ${data.kelurahan || 'Tanailandu'}`} 
+                    />
                   </motion.div>
                 </div>
               </section>

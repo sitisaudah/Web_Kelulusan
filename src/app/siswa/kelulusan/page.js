@@ -2,7 +2,8 @@
 import React, { useState, useEffect } from 'react';
 import { Award, Trophy, XCircle, Printer, RefreshCw, AlertCircle, Sparkles, CheckCircle2, User, ShieldCheck } from 'lucide-react';
 import Topbar from '@/components/portal/Topbar';
-import { checkGraduationStatus } from '@/backend/services/graduationService';
+import { checkGraduationAction } from '@/backend/actions/kelulusanActions';
+import { getCurrentUserAction } from '@/backend/actions/authActions';
 import confetti from 'canvas-confetti';
 
 export default function SiswaKelulusanPage() {
@@ -12,17 +13,47 @@ export default function SiswaKelulusanPage() {
   const [resultData, setResultData] = useState(null);
   const [errorMsg, setErrorMsg] = useState('');
 
-  // Saat pertama kali dimuat, periksa apakah ada hasil kelulusan yang tersimpan di localStorage
+  // Saat pertama kali dimuat, periksa data siswa yang login terlebih dahulu
   useEffect(() => {
-    const saved = localStorage.getItem('hasil_siswa');
-    if (saved) {
+    async function initStudentData() {
       try {
-        const parsed = JSON.parse(saved);
-        setResultData(parsed);
-        if (parsed.nisn) setNisn(parsed.nisn);
-        if (parsed.tanggal_lahir) setTglLahir(parsed.tanggal_lahir);
-      } catch (e) {}
+        const userRes = await getCurrentUserAction();
+        const curStudent = userRes?.studentData;
+        if (curStudent?.nisn) {
+          setNisn(curStudent.nisn);
+          if (curStudent.tanggal_lahir) {
+            setTglLahir(curStudent.tanggal_lahir);
+          }
+          // Ambil langsung hasil kelulusan resmi
+          setLoading(true);
+          const res = await checkGraduationAction(curStudent.nisn, curStudent.tanggal_lahir || '');
+          if (res.found && res.data) {
+            setResultData(res.data);
+            localStorage.setItem('hasil_siswa', JSON.stringify(res.data));
+            if (res.data.status === 'LULUS') {
+              confetti({ particleCount: 70, spread: 60, origin: { y: 0.6 } });
+            }
+          } else {
+            setResultData(curStudent);
+          }
+          setLoading(false);
+          return;
+        }
+      } catch (err) {}
+
+      // Fallback ke localStorage jika ada
+      const saved = localStorage.getItem('hasil_siswa');
+      if (saved) {
+        try {
+          const parsed = JSON.parse(saved);
+          setResultData(parsed);
+          if (parsed.nisn) setNisn(parsed.nisn);
+          if (parsed.tanggal_lahir) setTglLahir(parsed.tanggal_lahir);
+        } catch (e) {}
+      }
     }
+
+    initStudentData();
   }, []);
 
   const handleCek = async (e) => {
@@ -36,7 +67,7 @@ export default function SiswaKelulusanPage() {
     setErrorMsg('');
 
     try {
-      const res = await checkGraduationStatus(nisn, tglLahir);
+      const res = await checkGraduationAction(nisn, tglLahir);
       if (res.found && res.data) {
         setResultData(res.data);
         localStorage.setItem('hasil_siswa', JSON.stringify(res.data));
@@ -53,7 +84,7 @@ export default function SiswaKelulusanPage() {
         setErrorMsg(res.message || 'Data kelulusan tidak ditemukan.');
       }
     } catch (err) {
-      setErrorMsg('Gagal memuat data dari Google Spreadsheet. Periksa koneksi internet.');
+      setErrorMsg('Gagal memuat data kelulusan. Periksa format dan coba lagi.');
     } finally {
       setLoading(false);
     }
@@ -69,7 +100,7 @@ export default function SiswaKelulusanPage() {
     <div className="space-y-8 max-w-4xl">
       <Topbar
         title="Cek Kelulusan Siswa"
-        subtitle="Data Kelulusan Resmi Terintegrasi Langsung dengan Google Spreadsheet"
+        subtitle="Surat Keterangan Kelulusan Resmi Peserta Didik"
       />
 
       {/* Form Input Pencarian */}
@@ -172,7 +203,7 @@ export default function SiswaKelulusanPage() {
 
               <div className="space-y-4">
                 <h4 className="text-xs font-black uppercase tracking-widest text-slate-400 flex items-center gap-2">
-                  <ShieldCheck size={16} className="text-emerald-600" /> Akademik &amp; Keluarga
+                  <ShieldCheck size={16} className="text-emerald-600" /> Data Orang Tua, Wali &amp; Status
                 </h4>
                 <div className="space-y-2 text-xs border-l-2 border-slate-200 pl-4">
                   <div>
@@ -180,12 +211,18 @@ export default function SiswaKelulusanPage() {
                     <p className="font-bold text-slate-800">{resultData.nipd || '-'}</p>
                   </div>
                   <div>
-                    <p className="text-slate-400 text-[10px] font-bold">NOMOR NIK</p>
-                    <p className="font-mono font-bold text-slate-800">{resultData.nik || '-'}</p>
-                  </div>
-                  <div>
-                    <p className="text-slate-400 text-[10px] font-bold">NAMA ORANG TUA (AYAH / IBU)</p>
+                    <p className="text-slate-400 text-[10px] font-bold">NAMA AYAH / IBU KANDUNG</p>
                     <p className="font-bold text-slate-800">{resultData.nama_ayah || '-'} / {resultData.nama_ibu || '-'}</p>
+                  </div>
+                  {resultData.nama_wali && resultData.nama_wali !== '-' && (
+                    <div>
+                      <p className="text-slate-400 text-[10px] font-bold">NAMA WALI SISWA</p>
+                      <p className="font-bold text-slate-800">{resultData.nama_wali}</p>
+                    </div>
+                  )}
+                  <div>
+                    <p className="text-slate-400 text-[10px] font-bold">ALAMAT DOMISILI</p>
+                    <p className="font-bold text-slate-800">{resultData.alamat_lengkap || resultData.alamat || '-'}</p>
                   </div>
                   <div>
                     <p className="text-slate-400 text-[10px] font-bold">STATUS RESMI</p>
@@ -200,7 +237,7 @@ export default function SiswaKelulusanPage() {
             {/* Tombol Cetak Dokumen */}
             <div className="pt-6 border-t border-slate-100 flex flex-col sm:flex-row justify-between items-center gap-4 print:hidden">
               <span className="text-[11px] text-slate-400">
-                Sumber Data: Google Spreadsheet SMPN 18 Buton Tengah
+                Pangkalan Data Resmi Kelulusan SMPN 18 Buton Tengah
               </span>
               <button
                 onClick={handlePrint}
@@ -224,7 +261,7 @@ export default function SiswaKelulusanPage() {
           <Award size={40} className="mx-auto text-slate-300" />
           <h3 className="font-black text-slate-800 text-base">Belum Ada Data yang Diperiksa</h3>
           <p className="text-xs text-slate-400 max-w-md mx-auto">
-            Masukkan NISN dan tanggal lahir Anda pada formulir di atas untuk mengambil status kelulusan resmi dari Google Spreadsheet.
+            Masukkan NISN dan tanggal lahir Anda pada formulir di atas untuk memverifikasi status kelulusan resmi.
           </p>
         </div>
       )}

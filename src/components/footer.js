@@ -76,7 +76,7 @@ export default function Footer() {
 
       <div className="max-w-7xl mx-auto border-t border-slate-800 mt-12 pt-6 flex flex-col md:flex-row justify-between items-center text-xs text-slate-500 gap-4">
         <p>&copy; 2026 SMP Negeri 18 Buton Tengah. Hak Cipta Dilindungi Undang-Undang.</p>
-        <p className="text-[11px] text-slate-600">Terintegrasi dengan Google Spreadsheet &amp; Supabase Cloud</p>
+        <p className="text-[11px] text-slate-600">Terintegrasi Berkas Excel Dapodik &amp; Supabase Cloud</p>
       </div>
     </footer>
   );

@@ -38,7 +38,7 @@ export default async function SiswaDashboard() {
             Portal Akademik &amp; Kelulusan Digital
           </h2>
           <p className="text-blue-100/90 text-xs sm:text-sm leading-relaxed">
-            Akses informasi pengumuman kelulusan resmi dari Google Spreadsheet, kerjakan ulangan online CBT, dan pantau perkembangan nilai akademik Anda.
+            Akses informasi pengumuman kelulusan resmi sekolah, kerjakan ulangan online CBT, dan pantau perkembangan nilai akademik Anda.
           </p>
           <div className="pt-2 flex flex-wrap gap-3">
             <Link
@@ -62,9 +62,9 @@ export default async function SiswaDashboard() {
         <div className="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm flex items-center justify-between">
           <div>
             <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">Status Kelulusan</p>
-            <p className="text-xl font-black text-slate-800 mt-1">Google Sheets</p>
-            <span className="text-[10px] text-emerald-600 font-bold inline-flex items-center gap-1 mt-1">
-              <CheckCircle2 size={12} /> Terhubung Live
+            <p className="text-xl font-black text-emerald-600 mt-1">{studentData?.status || 'LULUS'}</p>
+            <span className="text-[10px] text-slate-500 font-bold inline-flex items-center gap-1 mt-1">
+              <CheckCircle2 size={12} className="text-emerald-500" /> Terverifikasi Resmi Sekolah
             </span>
           </div>
           <div className="w-12 h-12 rounded-2xl bg-amber-50 text-amber-500 flex items-center justify-center">

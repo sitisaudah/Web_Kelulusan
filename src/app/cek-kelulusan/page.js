@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { Calendar, GraduationCap, Loader2, AlertCircle } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
-import { checkGraduationStatus } from '@/backend/services/graduationService';
+import { checkGraduationAction } from '@/backend/actions/kelulusanActions';
 
 export default function CekKelulusan() {
   const [nisn, setNisn] = useState("");
@@ -28,7 +28,7 @@ export default function CekKelulusan() {
     setErrorMsg("");
 
     try {
-      const result = await checkGraduationStatus(nisn, tglLahirRaw);
+      const result = await checkGraduationAction(nisn, tglLahirRaw);
 
       if (result.found && result.data) {
         localStorage.setItem('hasil_siswa', JSON.stringify(result.data));
@@ -39,7 +39,7 @@ export default function CekKelulusan() {
       }
     } catch (err) {
       setLoading(false);
-      setErrorMsg("Gagal mengambil data dari Google Spreadsheet. Periksa koneksi internet Anda.");
+      setErrorMsg("Gagal memeriksa data kelulusan. Pastikan koneksi aktif dan format tanggal benar.");
     }
   };
 

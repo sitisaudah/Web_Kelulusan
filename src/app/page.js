@@ -83,7 +83,7 @@ export default function Home() {
               </div>
               <h3 className="text-base font-black text-slate-800 mb-1">Cek Kelulusan</h3>
               <p className="text-xs text-slate-500 leading-relaxed">
-                Pengumuman kelulusan resmi siswa SMPN 18 Buton Tengah via Google Spreadsheet.
+                Pengumuman kelulusan resmi peserta didik SMPN 18 Buton Tengah tahun ajaran terkini.
               </p>
             </div>
             <Link href="/cek-kelulusan" className="mt-4 text-xs font-bold text-blue-600 inline-flex items-center gap-1 group-hover:gap-2 transition-all">

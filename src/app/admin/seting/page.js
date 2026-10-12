@@ -2,7 +2,8 @@
 import React, { useState, useEffect } from 'react';
 import { 
   Save, Globe, Phone, Mail, FileSpreadsheet, 
-  CheckCircle2, AlertCircle, Loader2, ArrowLeft 
+  CheckCircle2, AlertCircle, Loader2, ArrowLeft,
+  ShieldCheck, Key 
 } from 'lucide-react';
 import Link from 'next/link';
 import Topbar from '@/components/portal/Topbar';
@@ -12,11 +13,10 @@ export default function SettingsPage() {
   const [settings, setSettings] = useState({
     nama_sekolah: 'SMP NEGERI 18 BUTON TENGAH',
     npsn: '69989025',
-    tahun_ajaran: '2025/2026',
+    tahun_ajaran: '2026/2027',
     alamat: 'Jalan Poros Waburense, Desa Tanailandu, Kec. Mawasangka, Kab. Buton Tengah, Sulawesi Tenggara 93762',
     email_kontak: 'info@smpn18buteng.sch.id',
     telepon_kontak: '0812-3456-7890',
-    google_sheet_kelulusan: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTUVq4l9uDPXQLj8S3BBa0lrRWvNWATwEzjtdhzfJvDMMVfGR5PIODosccCS9KOgYPT9OIm5jPoLSMD/pub?output=csv',
     pengumuman_buka: 'true',
   });
 
@@ -64,7 +64,7 @@ export default function SettingsPage() {
     <div className="space-y-8 max-w-4xl">
       <Topbar
         title="Pengaturan Sistem Sekolah"
-        subtitle="Konfigurasi Identitas, Tahun Ajaran, dan Spreadsheet Kelulusan di Supabase"
+        subtitle="Konfigurasi Identitas Lembaga, Tahun Ajaran, dan Pengumuman Kelulusan"
       />
 
       {successMsg && (
@@ -171,26 +171,32 @@ export default function SettingsPage() {
           </div>
         </div>
 
-        {/* 3. Konfigurasi Google Spreadsheet Kelulusan */}
+        {/* 3. Pangkalan Data & Ketentuan Akses Akun Siswa */}
         <div className="bg-white p-6 sm:p-8 rounded-3xl border border-slate-200 shadow-sm space-y-4">
           <h3 className="text-sm font-black text-slate-800 uppercase tracking-wider flex items-center gap-2">
-            <FileSpreadsheet size={18} className="text-amber-500" /> Sumber Data Kelulusan (Google Sheets)
+            <ShieldCheck size={18} className="text-blue-600" /> Pangkalan Data Siswa &amp; Ketentuan Akses Login
           </h3>
 
-          <div className="text-xs font-bold">
-            <label className="block text-slate-600 mb-1">
-              URL CSV Publik Google Spreadsheet
-            </label>
-            <input
-              type="url"
-              required
-              value={settings.google_sheet_kelulusan}
-              onChange={(e) => setSettings({ ...settings, google_sheet_kelulusan: e.target.value })}
-              className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:border-blue-600 text-slate-800 font-mono text-[11px]"
-            />
-            <p className="text-[11px] text-slate-400 font-normal mt-1.5">
-              URL yang dipublikasikan ke web dalam format CSV (File &rarr; Bagikan &rarr; Publikasikan ke web &rarr; CSV).
-            </p>
+          <div className="grid sm:grid-cols-2 gap-4">
+            <div className="p-4 bg-blue-50/80 rounded-2xl border border-blue-100 flex items-start gap-3">
+              <CheckCircle2 size={18} className="text-blue-600 shrink-0 mt-0.5" />
+              <div className="text-xs text-blue-900 leading-relaxed font-semibold">
+                <p className="font-extrabold mb-1">Integrasi Data Pokok Pendidikan (Dapodik)</p>
+                <p className="text-blue-700">
+                  Data identitas pribadi peserta didik, domisili, orang tua/wali, dan rombongan belajar disinkronkan secara resmi dan utuh melalui menu <b>Data Siswa</b> &amp; <b>Data Kelulusan</b>.
+                </p>
+              </div>
+            </div>
+
+            <div className="p-4 bg-emerald-50 rounded-2xl border border-emerald-100 flex items-start gap-3">
+              <Key size={18} className="text-emerald-600 shrink-0 mt-0.5" />
+              <div className="text-xs text-emerald-900 leading-relaxed font-semibold">
+                <p className="font-extrabold mb-1">Kredensial Resmi Masuk Portal Siswa</p>
+                <p className="text-emerald-700">
+                  Siswa masuk menggunakan <b>NISN</b> sebagai username dan <b>Tanggal Lahir (Format: YYYY-MM-DD, contoh: 2012-02-11)</b> sebagai password resmi. Pastikan siswa diinstruksikan memasukkan tanggal lahir sesuai data Dapodik agar tidak terjadi kesalahan login.
+                </p>
+              </div>
+            </div>
           </div>
         </div>
 

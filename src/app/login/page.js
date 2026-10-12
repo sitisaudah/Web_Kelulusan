@@ -165,15 +165,20 @@ function LoginFormContent() {
                 </div>
 
                 <div>
-                  <label className="block text-[10px] font-black text-slate-400 mb-1.5 uppercase tracking-widest">
-                    Password Siswa
-                  </label>
+                  <div className="flex justify-between items-center mb-1.5">
+                    <label className="block text-[10px] font-black text-slate-500 uppercase tracking-widest">
+                      Password (Tanggal Lahir)
+                    </label>
+                    <span className="text-[10px] font-bold text-blue-600 bg-blue-50 px-2 py-0.5 rounded-md">
+                      Format: YYYY-MM-DD
+                    </span>
+                  </div>
                   <div className="relative">
                     <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
                     <input
                       type={showPassword ? 'text' : 'password'}
                       required
-                      placeholder="••••••••"
+                      placeholder="Contoh: 2012-02-11"
                       value={siswaPassword}
                       onChange={(e) => setSiswaPassword(e.target.value)}
                       className="w-full pl-11 pr-11 py-3.5 bg-slate-50 border border-slate-200 rounded-2xl focus:border-blue-600 focus:bg-white outline-none text-xs font-bold text-slate-800 transition"
@@ -181,10 +186,13 @@ function LoginFormContent() {
                     <button
                       type="button"
                       onClick={() => setShowPassword(!showPassword)}
-                      className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-blue-600"
+                      className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-blue-600 cursor-pointer"
                     >
                       {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                     </button>
+                  </div>
+                  <div className="mt-2.5 p-3 bg-blue-50/80 border border-blue-100 rounded-2xl text-[11px] text-blue-900 leading-relaxed font-medium">
+                    <span className="font-extrabold text-blue-700">💡 Petunjuk Password:</span> Masukkan <strong>Tanggal Lahir</strong> Anda (format: <code>YYYY-MM-DD</code>, contoh: <code>2012-02-11</code>) atau nomor <strong>NISN</strong> Anda sesuai berkas data resmi sekolah.
                   </div>
                 </div>
 
@@ -214,14 +222,14 @@ function LoginFormContent() {
                     <input
                       type="text"
                       required
-                      placeholder="adminsmpn18buteng atau email"
+                      placeholder="Username atau email resmi"
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                       className="w-full pl-11 pr-4 py-3.5 bg-slate-50 border border-slate-200 rounded-2xl focus:border-blue-600 focus:bg-white outline-none text-xs font-bold text-slate-800 transition"
                     />
                   </div>
                   <p className="text-[10px] text-slate-400 mt-1">
-                    Gunakan username <code className="text-blue-600 font-mono">adminsmpn18buteng</code> atau email terdaftar
+                    Gunakan username <code className="text-blue-600 font-mono">adminsmpn18buteng</code> atau email resmi terdaftar
                   </p>
                 </div>
 

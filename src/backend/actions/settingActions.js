@@ -18,11 +18,10 @@ export async function getAllSettings() {
   const defaultFallback = {
     nama_sekolah: 'SMP NEGERI 18 BUTON TENGAH',
     npsn: '69989025',
-    tahun_ajaran: '2025/2026',
+    tahun_ajaran: '2026/2027',
     alamat: 'Jalan Poros Waburense, Desa Tanailandu, Kec. Mawasangka, Kab. Buton Tengah, Sulawesi Tenggara 93762',
     email_kontak: 'info@smpn18buteng.sch.id',
     telepon_kontak: '0812-3456-7890',
-    google_sheet_kelulusan: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTUVq4l9uDPXQLj8S3BBa0lrRWvNWATwEzjtdhzfJvDMMVfGR5PIODosccCS9KOgYPT9OIm5jPoLSMD/pub?output=csv',
     pengumuman_buka: 'true',
   };
 

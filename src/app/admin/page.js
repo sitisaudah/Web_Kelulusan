@@ -8,7 +8,7 @@ import {
 } from 'lucide-react';
 import Link from 'next/link';
 import Topbar from '@/components/portal/Topbar';
-import { getGraduationStats, DEFAULT_GOOGLE_SHEET_URL } from '@/backend/services/graduationService';
+import { getGraduationDataAction } from '@/backend/actions/kelulusanActions';
 import { getSiswaList } from '@/backend/actions/siswaActions';
 import { getUlanganList } from '@/backend/actions/ulanganActions';
 import { getPesanKontakList } from '@/backend/actions/kontakActions';
@@ -19,10 +19,10 @@ export default function AdminDashboard() {
   const [cbtCount, setCbtCount] = useState(0);
   const [pesanCount, setPesanCount] = useState(0);
 
-  // Fetch data kelulusan dari Google Spreadsheet melalui SWR
+  // Fetch data kelulusan dari berkas Excel yang diunggah guru melalui SWR
   const { data: sheetData, mutate, isValidating, error } = useSWR(
     'graduation_stats_admin',
-    () => getGraduationStats(DEFAULT_GOOGLE_SHEET_URL),
+    () => getGraduationDataAction(),
     { revalidateOnFocus: false }
   );
 
@@ -71,14 +71,14 @@ export default function AdminDashboard() {
           <div>
             <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">Siswa di Database</p>
             <p className="text-3xl font-black text-slate-800 mt-1">{dbSiswaCount}</p>
-            <span className="text-[10px] text-blue-600 font-bold mt-1 inline-block">Database Supabase</span>
+            <span className="text-[10px] text-blue-600 font-bold mt-1 inline-block">Database Sekolah</span>
           </div>
           <div className="w-12 h-12 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center">
             <Users size={24} />
           </div>
         </div>
 
-        {/* Peserta Kelulusan Google Sheets */}
+        {/* Peserta Kelulusan Excel */}
         <div className="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm flex items-center justify-between">
           <div>
             <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">Peserta Kelulusan</p>
@@ -117,20 +117,20 @@ export default function AdminDashboard() {
         </div>
       </div>
 
-      {/* Tabel Preview Kelulusan Google Spreadsheet */}
+      {/* Tabel Preview Kelulusan Peserta Didik */}
       <div className="bg-white rounded-3xl shadow-sm border border-slate-200 overflow-hidden">
         <div className="p-6 border-b border-slate-100 flex flex-col sm:flex-row justify-between sm:items-center gap-4">
           <div>
             <div className="flex items-center gap-2">
               <h3 className="font-black text-sm uppercase tracking-wider text-slate-800">
-                Data Kelulusan Google Spreadsheet
+                Rekapitulasi Kelulusan Siswa
               </h3>
               <span className="bg-emerald-50 text-emerald-700 text-[10px] font-extrabold px-2 py-0.5 rounded-md">
-                Live Google Sheets
+                Data Terverifikasi
               </span>
             </div>
             <p className="text-xs text-slate-400 mt-0.5">
-              Data kelulusan resmi ditarik secara otomatis dari spreadsheet sekolah
+              Daftar kelulusan resmi peserta didik SMP Negeri 18 Buton Tengah
             </p>
           </div>
 
@@ -149,7 +149,7 @@ export default function AdminDashboard() {
               onClick={() => mutate()}
               disabled={isValidating}
               className="p-2.5 bg-slate-100 hover:bg-slate-200 rounded-xl text-slate-700 transition disabled:opacity-50 shrink-0 cursor-pointer"
-              title="Refresh Data Spreadsheet"
+              title="Refresh Data"
             >
               <RefreshCw size={16} className={isValidating ? 'animate-spin text-blue-600' : ''} />
             </button>
@@ -194,7 +194,7 @@ export default function AdminDashboard() {
               ) : (
                 <tr>
                   <td colSpan={6} className="px-6 py-8 text-center text-slate-400">
-                    {isValidating ? 'Mengambil data dari Google Spreadsheet...' : 'Tidak ada data siswa ditemukan.'}
+                    {isValidating ? 'Memuat data kelulusan...' : 'Tidak ada data siswa ditemukan.'}
                   </td>
                 </tr>
               )}
